@@ -1,24 +1,28 @@
-# README
+# Gemini Task Manager API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Overview
 
-Things you may want to cover:
+This is a Rails API for a simple task management application. It currently provides endpoints for user registration, login, and logout.
 
-* Ruby version
+## API Endpoints
 
-* System dependencies
+**Base URL:** `/api/v1`
 
-* Configuration
+### Users
 
-* Database creation
+#### Create User
 
-* Database initialization
+**POST /api/v1/users**
 
-* How to run the test suite
+Creates a new user.
 
-* Services (job queues, cache servers, search engines, etc.)
+**Request Body:**
 
-* Deployment instructions
-
-* ...
+```json
+{
+  "user": {
+    "email": "user@example.com",
+    "username": "johndoe",
+    "password": "securepassword"
+  }
+}
