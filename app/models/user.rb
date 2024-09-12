@@ -1,8 +1,8 @@
-# filename: app/models/user.rb
-
 class User < ApplicationRecord
-  has_secure_password
+  include Devise::JWT::RevocationStrategies::JTIMatcher
 
-  validates :email, presence: true, uniqueness: true
-  validates :username, presence: true, uniqueness: true # Add validation for username
+  devise :database_authenticatable, :registerable, :recoverable,
+         :validatable, :jwt_authenticatable, jwt_revocation_strategy: self
+
+  validates :email, uniqueness: { case_sensitive: false }
 end
