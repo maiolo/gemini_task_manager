@@ -7,6 +7,13 @@ class Api::V1::TasksController < ApplicationController
   def index
     @tasks = current_user.tasks.all
 
+    # Filtering
+    @tasks = @tasks.where(status: params[:status]) if params[:status].present?
+
+    # Sorting
+    @tasks = @tasks.order(due_date: :asc) if params[:sort_by] == 'due_date_asc'
+    @tasks = @tasks.order(due_date: :desc) if params[:sort_by] == 'due_date_desc'
+
     render json: @tasks
   end
 
