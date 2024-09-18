@@ -22,6 +22,42 @@ RSpec.describe Api::V1::TasksController, type: :controller do
       get :index, format: :json
       expect(assigns(:tasks)).to match_array([task1, task2])
     end
+
+    context 'with sorting' do
+      let!(:task1) { create(:task, user: user, due_date: Date.today, title: 'Task 1') }
+      let!(:task2) { create(:task, user: user, due_date: Date.tomorrow, title: 'Task 2') }
+
+      it 'sorts by due_date_asc' do
+        get :index, params: { sort_by: 'due_date_asc' }, format: :json
+        expect(assigns(:tasks)).to eq([task1, task2])
+      end
+
+      it 'sorts by due_date_desc' do
+        get :index, params: { sort_by: 'due_date_desc' }, format: :json
+        expect(assigns(:tasks)).to eq([task2, task1])
+      end
+    end
+
+    context 'with filtering' do
+      let!(:pending_task) { create(:task, user: user, status: 'pending') }
+      let!(:in_progress_task) { create(:task, user: user, status: 'in_progress') }
+
+      it 'filters by status' do
+        get :index, params: { status: 'pending' }, format: :json
+        expect(assigns(:tasks)).to eq([pending_task])
+      end
+    end
+
+    context 'with filtering and sorting' do
+      let!(:task1) { create(:task, user: user, due_date: Date.today, status: 'pending', title: 'Task 1') }
+      let!(:task2) { create(:task, user: user, due_date: Date.tomorrow, status: 'pending', title: 'Task 2') }
+      let!(:task3) { create(:task, user: user, due_date: Date.today - 1.day, status: 'in_progress', title: 'Task 3') }
+
+      it 'filters by status and sorts by due_date_asc' do
+        get :index, params: { status: 'pending', sort_by: 'due_date_asc' }, format: :json
+        expect(assigns(:tasks)).to eq([task1, task2])
+      end
+    end
   end
 
   describe 'GET #show' do
